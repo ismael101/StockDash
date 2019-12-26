@@ -1,32 +1,66 @@
 <template>
-  <div id="app">
-    <div id="nav">
-      <router-link to="/">Home</router-link> |
-      <router-link to="/about">About</router-link>
-    </div>
-    <router-view/>
-  </div>
+ <v-app >
+   <v-navigation-drawer app v-model="drawer" :mini-variant.sync="mini" permanent dark color='blue-grey darken-3'>
+      <v-list-item>
+        <v-list-item-avatar>
+          <v-icon>dashboard</v-icon>
+        </v-list-item-avatar>
+
+        <v-list-item-title>Stock</v-list-item-title>
+
+        <v-btn
+          icon
+          @click.stop="mini = !mini"
+        >
+          <v-icon>mdi-chevron-left</v-icon>
+        </v-btn>
+      </v-list-item>
+
+      <v-divider></v-divider>
+
+      <v-list dense>
+        <v-list-item
+          v-for="item in items"
+          :key="item.title"
+          link
+        >
+          <v-list-item-icon>
+            <v-icon>{{ item.icon }}</v-icon>
+          </v-list-item-icon>
+
+          <v-list-item-content>
+            <v-list-item-title>{{ item.title }}</v-list-item-title>
+          </v-list-item-content>
+        </v-list-item>
+      </v-list>
+   </v-navigation-drawer>
+   <v-app-bar app flat>
+     <v-toolbar-title>
+      Stock Dashboard
+     </v-toolbar-title>
+   </v-app-bar>
+   <v-content>
+     <v-container fluid>
+       <router-view/>
+     </v-container>
+   </v-content>
+ </v-app>
 </template>
 
-<style>
-#app {
-  font-family: 'Avenir', Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-}
+<script>
 
-#nav {
-  padding: 30px;
-}
-
-#nav a {
-  font-weight: bold;
-  color: #2c3e50;
-}
-
-#nav a.router-link-exact-active {
-  color: #42b983;
-}
-</style>
+export default {
+  name: 'App',
+  data () {
+      return {
+        drawer: true,
+        items: [
+          { title: 'Home', icon: 'mdi-home-city' },
+          { title: 'My Account', icon: 'mdi-account' },
+          { title: 'Users', icon: 'donut_large' },
+        ],
+        mini: true,
+      }
+    }
+};
+</script>
