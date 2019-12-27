@@ -1,18 +1,18 @@
 <template>
- <v-app >
-   <v-navigation-drawer app v-model="drawer" :mini-variant.sync="mini" permanent dark color='blue-grey darken-3'>
+ <v-app>
+   <v-navigation-drawer app v-model="drawer" :mini-variant.sync="mini" permanent dark color='blue-grey darken-1'>
       <v-list-item>
         <v-list-item-avatar>
           <v-icon>dashboard</v-icon>
         </v-list-item-avatar>
 
-        <v-list-item-title>Stock</v-list-item-title>
+        <v-list-item-title class="overline">Menu</v-list-item-title>
 
         <v-btn
           icon
           @click.stop="mini = !mini"
         >
-          <v-icon>mdi-chevron-left</v-icon>
+          <v-icon>clear</v-icon>
         </v-btn>
       </v-list-item>
 
@@ -29,18 +29,19 @@
           </v-list-item-icon>
 
           <v-list-item-content>
-            <v-list-item-title>{{ item.title }}</v-list-item-title>
+            <v-list-item-title class="overline">{{ item.title }}</v-list-item-title>
           </v-list-item-content>
         </v-list-item>
       </v-list>
    </v-navigation-drawer>
-   <v-app-bar app flat>
-     <v-toolbar-title>
-      Stock Dashboard
+   <v-app-bar app flat class="blue-grey lighten-4"> 
+     <v-toolbar-title class="font-weight-light overline">
+      Stock Analytics
      </v-toolbar-title>
+     <v-spacer/>
    </v-app-bar>
-   <v-content>
-     <v-container fluid>
+   <v-content class="blue-grey lighten-4">
+     <v-container fluid class="blue-grey lighten-4 py-8 px-8">
        <router-view/>
      </v-container>
    </v-content>
@@ -55,9 +56,9 @@ export default {
       return {
         drawer: true,
         items: [
-          { title: 'Home', icon: 'mdi-home-city' },
-          { title: 'My Account', icon: 'mdi-account' },
-          { title: 'Users', icon: 'donut_large' },
+          { title: 'Quotes', icon: 'timeline' },
+          { title: 'Volume', icon: 'equalizer' },
+          { title: 'Technical', icon: 'donut_large' },
         ],
         mini: true,
       }
