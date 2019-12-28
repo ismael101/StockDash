@@ -23,6 +23,7 @@
           v-for="item in items"
           :key="item.title"
           link
+          router :to='item.route'
         >
           <v-list-item-icon>
             <v-icon>{{ item.icon }}</v-icon>
@@ -36,7 +37,7 @@
    </v-navigation-drawer>
    <v-app-bar app flat class="blue-grey lighten-4"> 
      <v-toolbar-title class="font-weight-light overline">
-      Stock Analytics
+      Apple Stock Analytics
      </v-toolbar-title>
      <v-spacer/>
    </v-app-bar>
@@ -56,9 +57,9 @@ export default {
       return {
         drawer: true,
         items: [
-          { title: 'Quotes', icon: 'timeline' },
-          { title: 'Volume', icon: 'equalizer' },
-          { title: 'Technical', icon: 'donut_large' },
+          { title: 'Quotes', icon: 'timeline', route:'/' },
+          { title: 'Volume', icon: 'equalizer', route:'/volume' },
+          { title: 'Technical', icon: 'donut_large', route:'/technical' },
         ],
         mini: true,
       }

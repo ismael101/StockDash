@@ -31,7 +31,7 @@ export default new Vuex.Store({
     }
   },
   getters:{
-    tableData(state){
+    quoteTable(state){
       let data = []
       let counter = 0
       state.labels.forEach(element => {
@@ -41,6 +41,16 @@ export default new Vuex.Store({
       })
       return data
     },
+    volumeTable(state){
+      let data = []
+      let counter = 0
+      state.labels.forEach(element => {
+        let obj = {datetime:element,volume:state.volume.data[counter]}
+        data.push(obj)
+        counter++
+      })
+      return data
+    }
   },
   mutations: {
     setQuotes(state,quotes){

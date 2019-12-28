@@ -7,7 +7,7 @@
         <v-col lg=4 md=4>
             <v-row>
                 <v-col>
-                    <v-card outlined width="175px" height="180px" dark class="blue-grey darken-1" :loading="loading">
+                    <v-card outlined width="175px" height="180px" dark class="blue-grey darken-1">
                         <v-card-title><span class="overline">{{this.$store.state.symbol}}</span><v-spacer/><span class="overline">Open</span></v-card-title>
                         <v-card-text class="headline">
                             $ {{this.$store.state.open.status}}
@@ -41,14 +41,12 @@
             </v-row>
         </v-col>
         <v-col lg=8 md=8>
-            <apexchart ref='seriesChart' type=area height=440 :options="chartOptions" :series="series" class="overline" />
+                <apexchart type=area height=440 :options="chartOptions" :series="series" v-if="loaded"/>
         </v-col>
     </v-row>
-    <v-row>
-        <v-col lg=10 md=10>
             <v-data-table
                 :headers="headers"
-                :items="this.$store.getters.tableData"
+                :items="this.$store.getters.quoteTable"
                 :items-per-page="5"
                 item-key="datetime"
                 :footer-props="{
@@ -60,16 +58,6 @@
                 class='blue-grey darken-1 overline'
                 >
             </v-data-table>
-        </v-col>
-        <v-col lg=2 md=2>
-            <v-card outlined dark class="blue-grey darken-1">
-                <v-card-title><span class="overline">{{this.$store.state.symbol}}</span><v-spacer/><span class="overline">Percent</span></v-card-title>
-                    <v-card-text class="headline">
-                        % {{this.$store.state.open.status}}
-                    </v-card-text>
-            </v-card>
-        </v-col>
-    </v-row>
   </div>
 </template>
 
@@ -107,14 +95,13 @@ export default {
             error:false,
             loaded:false,
             series: [{
-            name: `STOCK ${this.$store.state.symbol}`,
-            data: this.$store.state.close.data
+            name: `Stock ${this.$store.state.symbol}`,
+            data: []
             }],
             chartOptions: {
             chart: {
                 zoom: {
-                enabled: false,
-                foreColor: '#373d3f'
+                enabled: false
                 }
             },
             dataLabels: {
@@ -124,28 +111,30 @@ export default {
                 curve: 'straight'
             },
             series: [{
-                name: "STOCK ABC",
-                data: this.$store.state.close.data
+                name: `STOCK ${this.$store.state.symbol}`,
+                data: []
             }],
             title: {
-                text: 'Stock Price Analysis',
+                text: 'Time Series of Apple Stock',
                 align: 'left'
             },
             subtitle: {
                 text: 'Price Movements',
                 align: 'left'
             },
-            labels: this.$store.state.labels,
-            xaxis: {
-                type: 'datetime',
+            labels:[],
+            xaxis:{
+                labels: {
+                show: false,
+                }
             },
             yaxis: {
                 opposite: true
             },
             legend: {
                 horizontalAlign: 'left'
-          }
-        }
+            }
+            }
 
     }},
   methods:{
@@ -153,11 +142,12 @@ export default {
   },
   async mounted(){
       try{
-            this.loaded = true
             await this.$store.dispatch('setQuotes',this.$store.state.symbol)
             await this.$store.dispatch('setSeries',this.$store.state.symbol)
-            this.loaded = false
-            this.$refs.seriesChart.updateSeries()
+            this.chartOptions.labels = this.$store.state.labels
+            this.series[0].data = this.$store.state.close.data
+            this.chartOptions.series[0].data = this.$store.state.close.data
+            this.loaded = true
         }catch(err){
             console.log(err)
             this.error = true
