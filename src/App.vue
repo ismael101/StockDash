@@ -58,11 +58,21 @@ export default {
         drawer: true,
         items: [
           { title: 'Quotes', icon: 'timeline', route:'/' },
-          { title: 'Volume', icon: 'equalizer', route:'/volume' },
-          { title: 'Technical', icon: 'donut_large', route:'/technical' },
+          { title: 'Technical', icon: 'equalizer', route:'/technical' },
+          { title: 'Info', icon: 'donut_large', route:'/info' },
         ],
         mini: true,
       }
+    },
+  async mounted(){
+    try{
+      this.$store.dispatch('setError',false)
+      await this.$store.dispatch('setQuotes',this.$store.state.symbol)
+      await this.$store.dispatch('setSeries',this.$store.state.symbol)
+      await this.$store.dispatch('setTechnical',this.$store.state.symbol)
+    }catch(err){
+      this.$store.dispatch('setError',false)
     }
+  }
 };
 </script>

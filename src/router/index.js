@@ -1,7 +1,7 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
 import Index from '../views/Index'
-import Volume from '../views/Volume'
+import Info from '../views/Info'
 import Technical from '../views/Technical'
 Vue.use(VueRouter)
 
@@ -12,14 +12,14 @@ const routes = [
     component:Index
   },
   {
-    path:'/volume',
-    name:'volume',
-    component:Volume
-  },
-  {
     path:'/technical',
     name:'technical',
     component:Technical
+  },
+  {
+    path:'/info',
+    name:'info',
+    component:Info
   }
 
 ]

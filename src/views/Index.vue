@@ -1,6 +1,6 @@
 <template>
   <div>
-      <v-alert type="error" outlined v-model='error' dismissible>
+      <v-alert type="error" outlined v-model='this.$store.state.error' dismissible>
           API Timeout Wait a Minute and Refresh
     </v-alert>
     <v-row>
@@ -95,8 +95,8 @@ export default {
             error:false,
             loaded:false,
             series: [{
-            name: `Stock ${this.$store.state.symbol}`,
-            data: []
+            name: `Price of ${this.$store.state.symbol}`,
+            data: this.$store.state.close.data
             }],
             chartOptions: {
             chart: {
@@ -111,8 +111,8 @@ export default {
                 curve: 'straight'
             },
             series: [{
-                name: `STOCK ${this.$store.state.symbol}`,
-                data: []
+                name: `Price of ${this.$store.state.symbol}`,
+                data: this.$store.state.close.data
             }],
             title: {
                 text: 'Time Series of Apple Stock',
@@ -122,7 +122,7 @@ export default {
                 text: 'Price Movements',
                 align: 'left'
             },
-            labels:[],
+            labels:this.$store.state.stocklabels,
             xaxis:{
                 labels: {
                 show: false,
@@ -137,21 +137,8 @@ export default {
             }
 
     }},
-  methods:{
-    
-  },
-  async mounted(){
-      try{
-            await this.$store.dispatch('setQuotes',this.$store.state.symbol)
-            await this.$store.dispatch('setSeries',this.$store.state.symbol)
-            this.chartOptions.labels = this.$store.state.labels
-            this.series[0].data = this.$store.state.close.data
-            this.chartOptions.series[0].data = this.$store.state.close.data
-            this.loaded = true
-        }catch(err){
-            console.log(err)
-            this.error = true
-        }
+  mounted(){
+    this.loaded = true
   }
 }
 </script>

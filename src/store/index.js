@@ -6,9 +6,12 @@ Vue.use(Vuex)
 
 export default new Vuex.Store({
   state: {
+    error:false,
     symbol:'AAPL',
-    labels:[],
+    stocklabels:[],
+    technicallabels:[],
     percent:0.0,
+    percentchange:0.0,
     open:{
       status:0,
       data:[]
@@ -28,13 +31,21 @@ export default new Vuex.Store({
     volume:{
       status:0,
       data:[]
+    },
+    ema:{
+      status:0,
+      data:[]
+    },
+    sma:{
+      status:0,
+      data:[]
     }
   },
   getters:{
     quoteTable(state){
       let data = []
       let counter = 0
-      state.labels.forEach(element => {
+      state.stocklabels.forEach(element => {
         let obj = {datetime:element,open:state.open.data[counter],high:state.high.data[counter],low:state.low.data[counter],close:state.close.data[counter]}
         data.push(obj)
         counter++
@@ -44,7 +55,7 @@ export default new Vuex.Store({
     volumeTable(state){
       let data = []
       let counter = 0
-      state.labels.forEach(element => {
+      state.stocklabels.forEach(element => {
         let obj = {datetime:element,volume:state.volume.data[counter]}
         data.push(obj)
         counter++
@@ -60,14 +71,25 @@ export default new Vuex.Store({
       state.close.status = quotes.close
       state.volume.status = quotes.volume
       state.percent = quotes.percent
+      state.percentchange = quotes.percentchange
     },
     setSeries(state,datasets){
-      state.labels = datasets.labels
+      state.stocklabels = datasets.labels
       state.open.data = datasets.open
       state.close.data = datasets.close
       state.high.data = datasets.high
       state.low.data = datasets.low
       state.volume.data = datasets.volume
+    },
+    setTechnical(state,datasets){
+      state.technicallabels = datasets.labels
+      state.ema.data = datasets.ema
+      state.ema.status = datasets.ema[0] 
+      state.sma.data = datasets.sma
+      state.sma.status = datasets.sma[0] 
+    },
+    setError(state,bool){
+      state.error = bool
     }
   },
   actions: {
@@ -79,7 +101,8 @@ export default new Vuex.Store({
             low:res.data["Global Quote"]["04. low"], 
             close:res.data["Global Quote"]["08. previous close"],
             volume:res.data["Global Quote"]["06. volume"],
-            percent:res.data["Global Quote"]["09. change"]     
+            percent:res.data["Global Quote"]["09. change"],
+            percentchange:res.data["Global Quote"]["10. change percent"]       
         }
         commit('setQuotes',quotes)
     },
@@ -92,6 +115,7 @@ export default new Vuex.Store({
         let low = []
         let volume = []
         for(let key in res.data["Time Series (5min)"]){
+            console.log(key)
             labels.push(key)
             open.push(res.data["Time Series (5min)"][key]["1. open"])
             close.push(res.data["Time Series (5min)"][key]["4. close"])
@@ -101,6 +125,26 @@ export default new Vuex.Store({
         }
         let datasets = {labels:labels,open:open,high:high,low:low,close:close,volume:volume}
         commit('setSeries',datasets)
+    },
+    async setTechnical({commit},symbol){
+      let ema = []
+      let sma = []
+      let labels = []
+      let res1 = await axios.get(`https://www.alphavantage.co/query?function=SMA&symbol=${symbol}&interval=weekly&time_period=10&series_type=open&apikey=${process.env.KEY}`)
+      let res2 = await axios.get(`https://www.alphavantage.co/query?function=EMA&symbol=${symbol}&interval=weekly&time_period=10&series_type=open&apikey=${process.env.KEY}`)
+      
+      for(let key in res1.data["Technical Analysis: SMA"]){
+          labels.push(key)
+          sma.push(res1.data["Technical Analysis: SMA"][key]["SMA"])
+      }
+      for(let key in res2.data["Technical Analysis: EMA"]){
+        ema.push(res2.data["Technical Analysis: EMA"][key]["EMA"])
+    }
+      let datasets = {labels:labels,ema:ema,sma:sma}
+      commit('setTechnical', datasets)
+    },
+    setError({commit}, bool){
+      commit('setError',bool)
     }
   }
 })
