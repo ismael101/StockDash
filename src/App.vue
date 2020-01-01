@@ -59,7 +59,6 @@ export default {
         items: [
           { title: 'Quotes', icon: 'timeline', route:'/' },
           { title: 'Technical', icon: 'equalizer', route:'/technical' },
-          { title: 'Info', icon: 'donut_large', route:'/info' },
         ],
         mini: true,
       }
@@ -70,8 +69,9 @@ export default {
       await this.$store.dispatch('setQuotes',this.$store.state.symbol)
       await this.$store.dispatch('setSeries',this.$store.state.symbol)
       await this.$store.dispatch('setTechnical',this.$store.state.symbol)
+      this.$store.dispatch('setLoaded',true)
     }catch(err){
-      this.$store.dispatch('setError',false)
+      this.$store.dispatch('setError',true)
     }
   }
 };

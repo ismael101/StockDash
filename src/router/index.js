@@ -1,8 +1,8 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
 import Index from '../views/Index'
-import Info from '../views/Info'
 import Technical from '../views/Technical'
+import NotFound from '../views/NotFound'
 Vue.use(VueRouter)
 
 const routes = [
@@ -17,11 +17,10 @@ const routes = [
     component:Technical
   },
   {
-    path:'/info',
-    name:'info',
-    component:Info
+    path:'*',
+    name:'notfound',
+    component:NotFound
   }
-
 ]
 
 const router = new VueRouter({

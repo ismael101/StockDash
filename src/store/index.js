@@ -7,6 +7,7 @@ Vue.use(Vuex)
 export default new Vuex.Store({
   state: {
     error:false,
+    loaded:false,
     symbol:'AAPL',
     stocklabels:[],
     technicallabels:[],
@@ -90,6 +91,9 @@ export default new Vuex.Store({
     },
     setError(state,bool){
       state.error = bool
+    },
+    setLoaded(state,bool){
+      state.loaded = bool
     }
   },
   actions: {
@@ -115,7 +119,6 @@ export default new Vuex.Store({
         let low = []
         let volume = []
         for(let key in res.data["Time Series (5min)"]){
-            console.log(key)
             labels.push(key)
             open.push(res.data["Time Series (5min)"][key]["1. open"])
             close.push(res.data["Time Series (5min)"][key]["4. close"])
@@ -123,7 +126,7 @@ export default new Vuex.Store({
             low.push(res.data["Time Series (5min)"][key]["3. low"])
             volume.push(res.data["Time Series (5min)"][key]["5. volume"])
         }
-        let datasets = {labels:labels,open:open,high:high,low:low,close:close,volume:volume}
+        let datasets = {labels:labels.reverse(),open:open.reverse(),high:high.reverse(),low:low.reverse(),close:close.reverse(),volume:volume.reverse()}
         commit('setSeries',datasets)
     },
     async setTechnical({commit},symbol){
@@ -140,11 +143,14 @@ export default new Vuex.Store({
       for(let key in res2.data["Technical Analysis: EMA"]){
         ema.push(res2.data["Technical Analysis: EMA"][key]["EMA"])
     }
-      let datasets = {labels:labels,ema:ema,sma:sma}
+      let datasets = {labels:labels.reverse(),ema:ema.reverse(),sma:sma.reverse()}
       commit('setTechnical', datasets)
     },
     setError({commit}, bool){
       commit('setError',bool)
+    },
+    setLoaded({commit}, bool){
+      commit('setLoaded', bool)
     }
   }
 })

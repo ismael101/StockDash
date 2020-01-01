@@ -1,7 +1,10 @@
 <template>
   <div>
-      <v-alert type="error" outlined v-model='this.$store.state.error' dismissible>
-          API Timeout Wait a Minute and Refresh
+      <v-alert type="error" outlined v-if='this.$store.state.error' dismissible>
+          API Error
+    </v-alert>
+    <v-alert type="warning" outlined v-if='!this.$store.state.loaded' dismissble>
+        API Timeout
     </v-alert>
     <v-row>
         <v-col lg=4 md=4>
@@ -41,7 +44,7 @@
             </v-row>
         </v-col>
         <v-col lg=8 md=8>
-                <apexchart type=area height=440 :options="chartOptions" :series="series" v-if="loaded"/>
+                <apexchart type=area height=440 :options="chartOptions" :series="[{name: `Price of ${this.$store.state.symbol}`,data: this.$store.state.close.data}]" v-if="this.$store.state.loaded" ref='price'/>
         </v-col>
     </v-row>
             <v-data-table
@@ -63,6 +66,7 @@
 
 <script>
 import VueApexCharts from 'vue-apexcharts'
+
 export default {
     components:{
         apexchart: VueApexCharts,
@@ -92,12 +96,6 @@ export default {
                 value: 'close' 
             },
             ],
-            error:false,
-            loaded:false,
-            series: [{
-            name: `Price of ${this.$store.state.symbol}`,
-            data: this.$store.state.close.data
-            }],
             chartOptions: {
             chart: {
                 zoom: {
@@ -136,15 +134,11 @@ export default {
             }
             }
 
-    }},
-  mounted(){
-    this.loaded = true
-  }
+    }
+    },
 }
 </script>
 
 <style>
-.quote{
-    font-size: 25px
-}
+
 </style>
